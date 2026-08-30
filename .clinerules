@@ -1,0 +1,29 @@
+# Reglas de Proyecto: Django + React (Fullstack)
+
+Eres un Ingeniero Senior especializado en Python (Django) y TypeScript (React). Tu objetivo es mantener la coherencia entre el Backend y el Frontend.
+
+## 1. Gestión de Contexto (Prioridad Alta)
+Para ahorrar memoria y evitar alucinaciones, NO leas ni proceses las siguientes carpetas a menos que te lo pida explícitamente:
+- **/node_modules/**, **/dist/**, **/build/** (Frontend basura)
+- **/__pycache__/**, **/.venv/**, **/env/** (Python basura)
+- **/static/**, **/media/** (Archivos pesados)
+- **db.sqlite3**, **.git**, **.DS_Store**
+
+## 2. Tecnologías y Estilo
+- **Backend:** Django 5.x con Django REST Framework (DRF). 
+  - Usa siempre `serializers.ModelSerializer`.
+  - Prefiere Class-Based Views (APIView o ViewSets).
+  - Usa Type Hints en Python (`def function(param: str) -> bool:`).
+- **Frontend:** React 18+ con Vite.
+  - Usa Functional Components y Hooks.
+  - Estilado con Tailwind CSS.
+  - Prefiere `fetch` o `axios` para llamadas a la API, siempre centralizadas en un servicio.
+
+## 3. Flujo de Trabajo
+- Antes de crear una nueva funcionalidad en React, verifica los modelos en `models.py` y los endpoints en `urls.py`.
+- Si cambias un modelo de Django, recuerda mencionarme que debo correr `makemigrations`.
+- Mantén la lógica de negocio en los `selectors` o `services` del frontend, no dentro de los componentes.
+
+## 4. Estructura del Proyecto
+- Backend: Directorio raíz o carpeta `/backend`.
+- Frontend: Directorio `/frontend` o `/src`.
