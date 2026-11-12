@@ -1,0 +1,31 @@
+# Architecture Decision Records (ADR)
+
+Un ADR documenta una decision tecnica importante, el contexto en el que se tomo
+y sus consecuencias. Sirve para que un agente o una persona no tenga que
+reconstruir la decision leyendo todo el historial de chat.
+
+## Cuando escribir uno
+
+- Cambios de arquitectura o de stack.
+- Decisiones que afectan a varios modulos.
+- Trade-offs relevantes (rendimiento, memoria, seguridad, mantenibilidad).
+- Cualquier cosa que alguien preguntaria "por que se hizo asi".
+
+No hace falta un ADR para cada bugfix o cambio de estilo.
+
+## Formato
+
+1. Crea `NNNN-titulo-corto.md` (numeracion consecutiva a partir del 0002).
+2. Rellena contexto, decision, alternativas y consecuencias.
+3. Anade una linea al indice de abajo.
+
+## Indice
+
+| ADR | Decision | Estado |
+|---|---|---|
+| 0001 | Pivot a servidor MCP de dominio y workbench local | Aceptada (enmendada; punto 4 sustituido por 0002) |
+| 0002 | Perfiles de servidor, registros MCP y memoria en Neo4j | Aceptada |
+
+> Los ADR 0002-0006 del plan de estudio anterior se descartaron junto con el
+> archivo historico (`docs/archive/`). Sus decisiones ya no aplican al proyecto
+> actual; la numeracion futura continua en 0002.

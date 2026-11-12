@@ -1,228 +1,154 @@
-# AGENTS.md — Chatbot Fullstack con RAG + MCP + Neo4j
+# AGENTS.md — McpServer
 
-## Resumen del proyecto
+> **Reglas Globales Heredadas:** Este proyecto hereda automáticamente las
+> directivas globales del ecosistema de trabajo, hardware (Strata RTX 5070 Ti)
+> y criterios de memoria persistente en Neo4j definidas a nivel global en
+> `~/.gemini/config/AGENTS.md`.
 
-Chatbot inteligente con arquitectura Django + React que combina:
-- **RAG** (Retrieval-Augmented Generation): pgvector + Ollama
-- **MCP** (Model Context Protocol): integracion con Neo4j via servidor MCP
-- **Grafo de conocimiento**: Neo4j en Raspberry Pi como memoria multi-dominio
+Guia para agentes que trabajen en este repo. **McpServer es el servidor MCP del
+ecosistema de trabajo**: cada capacidad se da de alta como un **registro MCP**
+(modulo enchufable) y un **perfil** decide que registros se montan. Lo consumen
+Strata Local, los LLMs de suscripcion y cualquier cliente MCP estandar.
 
-El roadmap completo esta en `planing-estudio.md`. **Leelo siempre al iniciar una sesion nueva.**
+## Idea central
 
----
+**McpServer** es un servidor MCP stdio-first escrito en Python (`mcp_server/`):
 
-## Stack tecnologico
+- Un paquete, N **registros**: cada modulo de `mcp_server/tools/` expone
+  `register_<registro>_tools(mcp)`.
+- **Perfiles por subcomando**: `mcpserver`, `mcpserver code`,
+  `mcpserver memory`, `mcpserver all --exclude web`. Cada perfil construye su
+  propio `FastMCP` con sus `instructions` y solo sus tools.
+- Registro `code` (activo): `repo_map`, `search_code`, `get_symbol`,
+  `get_feature_pack`, con filtrado estricto de exclusiones, secretos y
+  dependencias.
+- Registro `memory` (Fase 2): memoria de proyecto en Neo4j con lecturas tipadas
+  y escrituras destiladas.
+- Feature packs con presupuesto de tokens, sin volcados de ficheros completos.
 
-| Capa | Tecnologia | Version |
-|------|-----------|---------|
-| Backend framework | Django + DRF | 4.2 |
-| Frontend framework | React + Vite | 19 + 8 |
-| CSS | Tailwind CSS | 4 |
-| Estado frontend | TanStack Query | 5 |
-| Base de datos | PostgreSQL + pgvector | pgvector/pgvector:0.8.2 |
-| Cache/memoria | Redis | 7-alpine |
-| LLM local | Ollama | minimax-m2.1:cloud |
-| Embeddings | nomic-embed-text (Ollama) | 768 dimensiones |
-| Grafo conocimiento | Neo4j | En Raspberry Pi (red local) |
-| MCP framework | FastMCP | 3.0 |
-| Python | Python | 3.9+ (backend), 3.13 (MCP server) |
-| Gestor paquetes Python | pip (backend), uv (MCP server) | - |
-| Gestor paquetes JS | npm | - |
-| Infraestructura | Docker Compose | PostgreSQL + Redis |
-| Templates referencia | ods-cicd-python-quicksilver-mcp | MCP server patron empresa |
+Complementos del entorno (no viven en este paquete):
 
----
+- **Strata Local**: `Qwen3.8-Flash-Next IQ3_S` en RTX 5070 Ti, expuesto via MCP
+  `strata-local` (`strata_chat`, `strata_status`) y activable con `/strata` o
+  `local:`.
+- **MCP genericos** que no duplicamos: `mcp-neo4j-cypher` (Cypher crudo
+  read-only) y `duckduckgo-mcp-server` (web search/fetch).
+- **Scripts auxiliares** en `scripts/`: `context_pack.py` (feature pack de repo)
+  y `web_context.py` / `web_search_agent.py` (brief web citable).
 
-## Estructura del proyecto
+## Documentos que debes leer
 
-```
-Chatbot/
-|
-|-- AGENTS.md                            <- Este archivo. Leer siempre al empezar.
-|-- planing-estudio.md                   <- ROADMAP: plan de integracion MCP + Neo4j.
-|-- README.md                            <- Documentacion general del proyecto.
-|-- .clinerules                          <- Convenciones de codigo (Django + React).
-|-- docker-compose.yml                   <- PostgreSQL + Redis.
-|-- requirements.txt                     <- Dependencias Python del backend.
-|-- init_project.sh                      <- Script de inicializacion.
-|
-|-- chatbot_project/                     <- BACKEND Django
-|   |-- manage.py
-|   |-- .env                             <- Variables de entorno (gitignored)
-|   |-- pytest.ini
-|   |-- chatbot_project/                  <- Configuracion Django
-|   |   |-- settings.py
-|   |   |-- urls.py                       <- Rutas raiz (/admin/, /api/)
-|   |   |-- wsgi.py, asgi.py
-|   +-- chatbot_app/                     <- App principal
-|       |-- models.py                     <- 6 modelos: Conversation, ChatMessage,
-|       |                                     UserPreference, BotConfiguration,
-|       |                                     Document, DocumentChunk (pgvector)
-|       |-- views.py                      <- 10 endpoints REST
-|       |-- serializers.py
-|       |-- urls.py
-|       |-- admin.py
-|       +-- services/
-|           +-- langchain_service.py      <- Core LLM + RAG + Redis memory
-|
-|-- frontend/                            <- FRONTEND React
-|   |-- package.json
-|   |-- vite.config.js
-|   +-- src/
-|       |-- main.jsx                      <- Entry point (QueryClientProvider)
-|       |-- App.jsx                       <- Chat UI principal
-|       |-- hooks/useChat.js              <- Mutaciones API (sendMessage, uploadFile)
-|       |-- components/Spinner.jsx
-|       +-- queryClient.js
-|
-|-- mcp_server/                          <- [PENDIENTE] MCP Server para Neo4j
-|-- mcp_client/                          <- [PENDIENTE] MCP Client para Django
-+-- scripts/                             <- [PENDIENTE] Scripts de utilidad
-```
+| Si vas a... | Lee |
+|---|---|
+| Entender el proyecto | `docs/STRATEGY.md` + `docs/ARCHITECTURE.md` |
+| Decidir que hacer | `docs/ROADMAP.md` |
+| Ver decisiones | `docs/adr/` |
 
----
+## Estado actual
 
-## Como arrancar el proyecto
+- `mcp_server/`: baseline completada (Fase 0). Registro `code` con tests al 100%.
+- Fase 1 en curso: evaluacion del modelo local con tareas reales de desarrollo.
+- Transporte: **stdio-first**. No requiere base de datos, Docker ni servicios
+  externos para funcionar.
+- Arquitectura de registros y perfiles: decidida en `docs/adr/0002-*.md`
+  (pendiente de implementacion en Fase 2).
+- Registro `memory` (Neo4j en Raspberry Pi): pendiente (Fase 2), con degradacion
+  limpia si la red no esta disponible. El grafo de codigo queda **reservado**
+  hasta la Fase 4.
 
-### 1. Infraestructura (Docker)
+## Arranque rapido
+
 ```bash
-docker-compose up -d   # PostgreSQL:5432 + Redis:6379
+# Instalar el paquete en modo editable
+pip install -e .
+
+# Arrancar el servidor MCP (stdio), perfil all
+mcpserver
+
+# Perfiles: solo codigo, solo memoria, o recorte fino
+mcpserver code
+mcpserver memory
+mcpserver all --exclude web
+
+# Tools de linea de comandas (sin MCP)
+python scripts/context_pack.py --task "descripcion" --budget 24000 --out context/tarea.md
+python scripts/web_context.py --query "FastMCP stdio server" --max-results 3 --out context/web.md
 ```
 
-### 2. Backend Django
+## Estructura
+
+```text
+McpServer/
+|-- AGENTS.md
+|-- README.md
+|-- pyproject.toml           Paquete, deps y entrypoint del servidor
+|-- docs/                    Vision, arquitectura, roadmap, ADRs
+|-- mcp_server/
+|   |-- core/                config, scanner, symbols, search, pack
+|   |-- tools/               registros (code.py; memory.py en Fase 2)
+|   |-- server.py            create_server(profile)
+|   + -- __main__.py         Arranque stdio + perfiles por subcomando
+|-- scripts/                 context_pack.py, web_context.py, web_search_agent.py
++-- tests/                   Pruebas unitarias del paquete
+```
+
+## Reglas para agentes
+
+1. **stdio-first.** El servidor y sus tools deben arrancar sin servicios
+   externos. Cualquier dependencia de red o base de datos debe degradar con
+   mensaje claro, nunca petar.
+2. **No duplicar tools genericas.** Schema/Cypher crudo/web search ya estan
+   cubiertos por `mcp-neo4j-cypher` y `duckduckgo-mcp-server`. Nuestros registros
+   son complementarios: lecturas tipadas de alto nivel y escrituras validadas.
+3. **No acoplar el MCP a frameworks web.** Acceso directo al sistema de
+   archivos, grafo o DB; si falta un servicio, degradacion explicita.
+4. **Contexto justo, no maximo.** Usa feature packs y busqueda quirurgica; no
+   vuelques el repo entero ni ficheros completos.
+5. **Secretos fuera.** El scanner filtra `.env`, claves y tokens; no los leas ni
+   los imprimas.
+6. **No inventes** endpoints, versiones, APIs ni resultados de tests.
+7. **Web con citas.** Si la respuesta depende de internet, busca y cita URLs.
+8. **Tests/lint antes de cerrar:** `python -m pytest tests -q` desde la raiz.
+9. **Un cliente por interfaz.** El servidor MCP es la interfaz; no añadas
+   frontends ni APIs HTTP salvo que aporten algo que stdio no tenga.
+10. **Documenta decisiones** relevantes en `docs/adr/`.
+11. **Memoria en Neo4j con criterio.** Guarda entidades y relaciones destiladas
+    (nodos `:Memory`); no vuelques codigo en bruto ni logs temporales.
+
+## Comandos utiles
+
 ```bash
-cd chatbot_project
-source ../.venv/bin/activate
-python manage.py runserver   # http://localhost:8000
+# Tests del paquete
+python -m pytest tests -q
+
+# Empaquetado de contexto de una tarea
+python scripts/context_pack.py --task "anadir tool de impacto" --budget 24000
+
+# Lint/formato (si hay config)
+python -m ruff check mcp_server scripts tests
 ```
 
-### 3. Frontend React
-```bash
-cd frontend
-npm run dev   # http://localhost:5173
-```
+## Roadmap resumido
 
-### 4. Ollama
-```bash
-ollama serve
-ollama pull minimax-m2.1:cloud
-ollama pull nomic-embed-text
-```
+Detalle y estados en `docs/ROADMAP.md`:
 
-### 5. Tests
-```bash
-cd chatbot_project && pytest
-```
+- **Fase 0 — Baseline MCP**: completada.
+- **Fase 1 — Evaluacion con el modelo local**: en curso.
+- **Fase 2 — Registro `memory` (Neo4j) y perfiles**: siguiente.
+- **Fase 3 — Workflow autonomo de issues**: pendiente.
+- **Fase 4 — Grafo de impacto de codigo** (`graph`): pendiente.
 
----
+## Arranque de una sesion nueva
 
-## Modelos de datos (backend)
+Di siempre:
 
-| Modelo | Campos clave | Proposito |
-|--------|-------------|-----------|
-| `Conversation` | id (UUID), title, is_active | Hilo de conversacion |
-| `ChatMessage` | sender (user/bot), message, conversation FK | Mensaje individual |
-| `UserPreference` | user_identifier, language, tone | Preferencias de usuario |
-| `BotConfiguration` | temperature, max_response_length | Configuracion del bot |
-| `Document` | file_name, content_hash (SHA-256), **neo4j_node_id** | Documento subido (RAG) |
-| `DocumentChunk` | chunk_index, text, embedding (VectorField 768), **neo4j_node_id** | Fragmento con embedding |
+> "Lee AGENTS.md, docs/STRATEGY.md y docs/ROADMAP.md. El proyecto es McpServer:
+> el servidor MCP del ecosistema, con registros enchufables (primero `code`,
+> luego `memory` en Neo4j) y perfiles por subcomando. [Describe que quieres
+> hacer hoy]"
 
-**Nota:** `neo4j_node_id` en Document y DocumentChunk son campos puente para la futura integracion con Neo4j.
+## No leer salvo que se pida
 
----
-
-## API endpoints
-
-| Metodo | Ruta | Descripcion |
-|--------|------|-------------|
-| `POST` | `/api/chat/` | Enviar mensaje (con RAG opcional) |
-| `GET` | `/api/history/` | Historial de conversaciones |
-| `DELETE` | `/api/history/clear/` | Borrar historial |
-| `POST` | `/api/conversations/` | Crear conversacion |
-| `GET` | `/api/conversations/<uuid>/` | Detalle de conversacion |
-| `PUT` | `/api/conversations/<uuid>/update/` | Actualizar titulo |
-| `GET` | `/api/preferences/<user_id>/` | Preferencias de usuario |
-| `PUT` | `/api/preferences/<user_id>/update/` | Actualizar preferencias |
-| `GET` | `/api/config/` | Configuracion del bot |
-| `PUT` | `/api/config/update/` | Actualizar config del bot |
-| `POST` | `/api/upload-text-file/` | Subir archivo texto (RAG) |
-
----
-
-## Convenciones de codigo
-
-### Backend (Django)
-- Las vistas usan `@api_view` decorators (function-based views), NO class-based views
-- Serializadores: `ModelSerializer` de DRF
-- Type hints en metodos de servicio
-- Logica de negocio en `services/`, no en views
-- Ollama se llama directamente via `requests` (no usa langchain-ollama)
-- Memoria conversacional: Redis con fallback a PostgreSQL
-
-### Frontend (React)
-- Functional components + hooks
-- Tailwind CSS para estilos (NO CSS modules)
-- TanStack Query para estado del servidor (staleTime: 5 min)
-- Mutaciones en `hooks/useChat.js`, no inline en componentes
-
-### MCP Server (patron empresa)
-- Arquitectura hexagonal: CLI -> MCP -> Domain -> Infrastructure
-- `@mcp.tool` decorator con name, description, tags
-- Parametros tipados con `pydantic.Field(description=...)`
-- Modelos Pydantic para input/output
-- Async functions (async/await)
-- Un sub-MCP por dominio, montado en servidor principal via `mcp.mount()`
-- Entry point: `cli.py` -> `parse_arguments(on_launch=start_mcp_server)`
-- Transporte configurable: stdio (local) / http / sse
-
----
-
-## Plan MCP + Neo4j (Fase actual: 0)
-
-El plan completo esta en `planing-estudio.md`. Resumen:
-
-| Fase | Estado | Descripcion |
-|------|--------|-------------|
-| 0 | **EN CURSO** | Diagnostico de Neo4j en RPi, verificacion de conectividad |
-| 1 | Pendiente | MCP Server generico (5 tools grafo + 3 tools RAG) |
-| 2 | Pendiente | MCP Client en Django + integracion en chat |
-| 3 | Pendiente | Sincronizacion pgvector <-> Neo4j, escritura |
-| 4 | Pendiente | Docker, CI/CD, documentacion |
-
-### Decisiones de diseno (NO cambiar sin discutir)
-- MCP Server en maquina de desarrollo (no en RPi)
-- Transporte: stdio (local), luego SSE/HTTP
-- Herramientas genericas primero, RAG especifico despues
-- Solo lectura en Fase 1, escritura en Fase 3
-- FastMCP publico (no el wrapper privado ods_mcp_core)
-
-### Neo4j en Raspberry Pi
-- Datos existentes: proyectos de desarrollo + estadisticas La Liga + memoria IA
-- Conexion via Bolt (puerto 7687)
-- Credenciales en `chatbot_project/.env`
-
-### Proyecto de referencia
-- `/mnt/c/Users/jesus/VS/ods-cicd-python-quicksilver-mcp/` — MCP server produccion Santander
-- Patron a seguir: `src/model_context_protocol/domains/environments/mcp.py`
-- Documentacion: `overview.md`, `CONTRIBUTING.md`
-
----
-
-## Archivos que NO debes leer a menos que se pida
-
-- `node_modules/`, `dist/`, `build/`
-- `__pycache__/`, `.venv/`, `env/`
-- `static/`, `media/`
-- `*.egg-info/`
-- `.git/`, `.DS_Store`
-- `uv.lock`
-
----
-
-## Para futuras sesiones de opencode
-
-Al iniciar una sesion nueva, di siempre:
-
-> "Lee AGENTS.md y planing-estudio.md. Estamos en la Fase 0 del plan MCP+Neo4j. [Describe que quieres hacer hoy]"
-
-Esto garantiza que opencode tenga todo el contexto desde el primer mensaje.
+- `node_modules/`, `dist/`, `build/`, `.venv/`, `__pycache__/`
+- `*.gguf`, `*.log`
+- `.env`, claves, `mcp.json` completo (puede contener credenciales)

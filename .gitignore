@@ -145,7 +145,8 @@ Thumbs.db
 docker-compose.override.yml
 
 # Project specific
-chatbot_project/db.sqlite3
-chatbot_project/media/
-chatbot_project/staticfiles/
-chatbot_project/logs/
+*.gguf
+mcp.json
+
+# Context packs generados
+context/
