@@ -85,10 +85,19 @@ git remote -v
 ```
 
 **Pendiente:** renombrar el repositorio en GitHub de `chatbot` a `mcpserver`.
-Mientras no se haga, `git push` fallará con "Repository not found". Puede
-hacerse desde la web de GitHub (Settings → General → Repository name) o con la
-CLI:
+Mientras no se haga, `git push` a `origin` falla con "Repository not found"; los
+commits se suben al nombre antiguo:
+
+```bash
+git push https://github.com/jesusmoralesaguiar/chatbot.git main
+```
+
+Para renombrar, desde la web de GitHub (Settings → General → Repository name) o
+con la CLI:
 
 ```bash
 gh repo rename mcpserver --repo jesusmoralesaguiar/chatbot
 ```
+
+Hecho el renombrado, `origin` ya funciona tal cual y basta con
+`git push -u origin main`.
