@@ -217,8 +217,8 @@ historial de git.
 ## Lanzadores del motor local
 
 `start_llama.ps1`, `start_llama.bat` y `check_tools.ps1` no son parte del
-paquete ni entran en los tests. Son conveniencia para la Fase 1 (evaluar a
-Strata):
+paquete ni entran en los tests. Son conveniencia del entorno para tener un
+`llama-server` de prueba con servidores MCP montados:
 
 | Script | Que hace |
 |---|---|

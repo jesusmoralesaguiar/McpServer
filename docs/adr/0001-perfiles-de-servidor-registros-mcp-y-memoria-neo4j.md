@@ -60,7 +60,7 @@ Restricciones que condicionan la decisión:
     nodos `:Memory` (criterio de destilación del config global).
 - **Reservado, sin indexador:** el grafo de código
   (`File-[:IMPORTS]->Module-[:CALLS]->Symbol`) queda documentado como esquema
-  objetivo y se implementa en la Fase 4.
+  objetivo y se implementa en la Fase 3.
 - **Complementario, no duplicado:** el Cypher crudo y libre sigue en
   `mcp-neo4j-cypher` (read-only). Aquí van las escrituras y las lecturas
   tipadas con formato compacto y citas.

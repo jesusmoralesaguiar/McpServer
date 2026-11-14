@@ -22,9 +22,9 @@ usan los modelos se da de alta como un **registro MCP** (módulo enchufable) y u
 |  registros (módulos con register_<registro>_tools(mcp)):                 |
 |  - code   (activo):  repo_map, search_code, get_symbol,                  |
 |                      get_feature_pack                                    |
-|  - memory (Fase 2):  get_project_context, log_decision,                  |
+|  - memory (Fase 1):  get_project_context, log_decision,                  |
 |                      search_knowledge                                    |
-|  - graph  (Fase 4):  impacto de cambios (esquema reservado)              |
+|  - graph  (Fase 3):  impacto de cambios (esquema reservado)              |
 +-------------------+-----------------------------------+------------------+
                     |                                   |
                     v                                   v
@@ -72,7 +72,7 @@ lecturas tipadas.
   2. `search_code`: Búsqueda acotada con líneas de contexto sin volcar ficheros.
   3. `get_symbol`: Extracción de clases, funciones y componentes por AST.
   4. `get_feature_pack`: Empaquetado en Markdown ajustado a un presupuesto de tokens para resolver issues.
-* **Registro `memory` (Fase 2):** lecturas tipadas de alto nivel
+* **Registro `memory` (Fase 1):** lecturas tipadas de alto nivel
   (`get_project_context`, `search_knowledge`) y escrituras destiladas
   (`log_decision`) en Neo4j. El Cypher crudo y libre sigue en
   `mcp-neo4j-cypher`; no se duplican tools.
@@ -95,7 +95,7 @@ lecturas tipadas.
 | Strata Local | Motor de razonamiento e inferencia en RTX 5070 Ti | **Activo** |
 | Modelos de suscripción | Consumidores de los mismos registros vía MCP | **Activo** |
 | Neo4j en Pi | Grafo de conocimiento y memoria persistente | **Activo** |
-| Registro `memory` | Tools tipadas de memoria sobre Neo4j | **Pendiente** (Fase 2) |
+| Registro `memory` | Tools tipadas de memoria sobre Neo4j | **Pendiente** (Fase 1) |
 | `tests/` | Batería de pruebas unitarias del servidor MCP | **Activo** (100% pasando) |
 | `scripts/` | Utilidades complementarias (`context_pack.py`, `web_context.py`) | **Referencia/soporte** |
 | `docs/` | Visión, arquitectura, roadmap y ADRs | **Activo** |

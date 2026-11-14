@@ -22,7 +22,7 @@ Strata Local, los LLMs de suscripcion y cualquier cliente MCP estandar.
 - Registro `code` (activo): `repo_map`, `search_code`, `get_symbol`,
   `get_feature_pack`, con filtrado estricto de exclusiones, secretos y
   dependencias.
-- Registro `memory` (Fase 2): memoria de proyecto en Neo4j con lecturas tipadas
+- Registro `memory` (Fase 1): memoria de proyecto en Neo4j con lecturas tipadas
   y escrituras destiladas.
 - Feature packs con presupuesto de tokens, sin volcados de ficheros completos.
 
@@ -46,7 +46,7 @@ Strata Local, los LLMs de suscripcion y cualquier cliente MCP estandar.
 - **Lanzadores del motor local**: `start_llama.ps1` / `start_llama.bat` /
   `check_tools.ps1`. Solo envuelven alias de WSL para subir un `llama-server`
   aparte en el puerto `8080` y comprobar que levante sus servidores MCP. No son
-  el gateway de Strata. Conveniencia para la Fase 1; no forman parte del paquete
+  el gateway de Strata. Son conveniencia del entorno; no forman parte del paquete
   ni de sus tests.
 
 ## Documentos que debes leer
@@ -60,14 +60,15 @@ Strata Local, los LLMs de suscripcion y cualquier cliente MCP estandar.
 ## Estado actual
 
 - `mcp_server/`: baseline completada (Fase 0). Registro `code` con tests al 100%.
-- Fase 1 en curso: evaluacion del modelo local con tareas reales de desarrollo.
 - Transporte: **stdio-first**. No requiere base de datos, Docker ni servicios
   externos para funcionar.
 - Arquitectura de registros y perfiles: decidida en `docs/adr/0001-*.md`
-  (pendiente de implementacion en Fase 2).
-- Registro `memory` (Neo4j en Raspberry Pi): pendiente (Fase 2), con degradacion
+  (pendiente de implementacion en Fase 1).
+- Registro `memory` (Neo4j en Raspberry Pi): pendiente (Fase 1), con degradacion
   limpia si la red no esta disponible. El grafo de codigo queda **reservado**
-  hasta la Fase 4.
+  hasta la Fase 3.
+- La evaluacion del modelo local no es trabajo de este repo: ver
+  "Fuera del alcance" en `docs/ROADMAP.md`.
 
 ## Arranque rapido
 
@@ -98,7 +99,7 @@ McpServer/
 |-- docs/                    Vision, arquitectura, roadmap, ADRs
 |-- mcp_server/
 |   |-- core/                config, scanner, symbols, search, pack
-|   |-- tools/               registros (code.py; memory.py en Fase 2)
+|   |-- tools/               registros (code.py; memory.py en Fase 1)
 |   |-- server.py            create_server(profile)
 |   + -- __main__.py         Arranque stdio + perfiles por subcomando
 |-- scripts/                 context_pack.py, web_context.py, lanzadores llama
@@ -146,10 +147,13 @@ python -m ruff check mcp_server scripts tests
 Detalle y estados en `docs/ROADMAP.md`:
 
 - **Fase 0 — Baseline MCP**: completada.
-- **Fase 1 — Evaluacion con el modelo local**: en curso.
-- **Fase 2 — Registro `memory` (Neo4j) y perfiles**: siguiente.
-- **Fase 3 — Workflow autonomo de issues**: pendiente.
-- **Fase 4 — Grafo de impacto de codigo** (`graph`): pendiente.
+- **Fase 1 — Registro `memory` (Neo4j) y perfiles**: siguiente.
+- **Fase 2 — Workflow autonomo de issues**: pendiente.
+- **Fase 3 — Grafo de impacto de codigo** (`graph`): pendiente.
+
+La evaluacion del modelo local (Strata y LLMs de suscripcion) **no es una fase de
+este repo**: se mide en el entorno de trabajo. Aqui solo se garantiza el contexto
+que consumen. Ver "Fuera del alcance" en `docs/ROADMAP.md`.
 
 ## Arranque de una sesion nueva
 

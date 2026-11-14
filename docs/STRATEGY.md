@@ -42,8 +42,8 @@ registros y los modelos (locales o de suscripcion) eligen que perfil encender.
 | Registro | Que aporta | Estado |
 |---|---|---|
 | `code` | Nivel 0 sobre el repo: `repo_map`, `search_code`, `get_symbol`, `get_feature_pack` | **Activo** |
-| `memory` | Neo4j (Pi): decisiones, aprendizajes y entidades destiladas `:Memory` | **Siguiente** (Fase 2) |
-| `graph` | Grafo de codigo e impacto de cambios | Reservado (Fase 4) |
+| `memory` | Neo4j (Pi): decisiones, aprendizajes y entidades destiladas `:Memory` | **Siguiente** (Fase 1) |
+| `graph` | Grafo de codigo e impacto de cambios | Reservado (Fase 3) |
 | `web` | Brief web citable (hoy vive en `scripts/`) | Soporte |
 
 Servidores MCP **externos** que no duplicamos: `mcp-neo4j-cypher` (Cypher
@@ -73,7 +73,8 @@ lecturas tipadas; el Cypher libre sigue en el MCP generico. Ver
 4. **Citas y verificacion**: web, documentos y grafo deben poder rastrearse.
 5. **Un cliente por interfaz**: el servidor MCP stdio es la interfaz principal;
    no se anaden frontends ni APIs HTTP salvo que aporten algo que stdio no dé.
-6. **Medir**: exito en tareas reales, tokens, tiempo y tools usadas.
+6. **Medir el contexto**: tokens de esquema, tamano del feature pack y tools
+   usadas por tarea. El exito del modelo se mide en el entorno de trabajo.
 
 ## Que construir a continuacion
 
@@ -85,7 +86,9 @@ lecturas tipadas; el Cypher libre sigue en el MCP generico. Ver
    plan, cambios, tests y resumen.
 4. **Grafo de codigo** para impacto de cambios y contexto quirurgico.
 5. **RAG opcional** solo si aparece una necesidad real de documentos.
-6. **Evaluacion** con 10-20 tareas reales de proyectos personales.
+6. **Evaluacion** con 10-20 tareas reales de proyectos personales. Se hace en el
+   entorno de trabajo, no como entregable de `McpServer`: aqui solo se
+   garantiza que el contexto medido sea el correcto.
 
 ## Que dejar de hacer
 

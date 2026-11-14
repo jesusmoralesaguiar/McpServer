@@ -11,8 +11,8 @@ cualquier cliente MCP estándar: **Antigravity**, **Cursor**, **Claude Desktop**
 
 ## Características
 
-* **Registros enchufables:** `code` (activo) y `memory` en Neo4j (Fase 2), cada uno con su módulo `register_<registro>_tools(mcp)`.
-* **Perfiles por subcomando** (Fase 2): `mcpserver code`, `mcpserver memory`, `mcpserver all --exclude web`. Cada perfil paga solo el coste de esquema que aporta a la tarea.
+* **Registros enchufables:** `code` (activo) y `memory` en Neo4j (Fase 1), cada uno con su módulo `register_<registro>_tools(mcp)`.
+* **Perfiles por subcomando** (Fase 1): `mcpserver code`, `mcpserver memory`, `mcpserver all --exclude web`. Cada perfil paga solo el coste de esquema que aporta a la tarea.
 * **Agnóstico y desacoplado:** No depende de un modelo ni de un cliente concreto.
 * **Contexto quirúrgico:** `repo_map`, `search_code`, `get_symbol` y `get_feature_pack` seleccionan solo los fragmentos y líneas estrictamente necesarios.
 * **Seguridad de serie:** Filtra automáticamente secretos (`.env*`, claves privadas, certificados) y carpetas pesadas (`node_modules`, `.venv`, cachés).
