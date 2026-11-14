@@ -15,7 +15,7 @@ No hace falta un ADR para cada bugfix o cambio de estilo.
 
 ## Formato
 
-1. Crea `NNNN-titulo-corto.md` (numeracion consecutiva a partir del 0002).
+1. Crea `NNNN-titulo-corto.md` (numeracion consecutiva a partir del 0002; el 0001 ya esta ocupado).
 2. Rellena contexto, decision, alternativas y consecuencias.
 3. Anade una linea al indice de abajo.
 
@@ -23,9 +23,9 @@ No hace falta un ADR para cada bugfix o cambio de estilo.
 
 | ADR | Decision | Estado |
 |---|---|---|
-| 0001 | Pivot a servidor MCP de dominio y workbench local | Aceptada (enmendada; punto 4 sustituido por 0002) |
-| 0002 | Perfiles de servidor, registros MCP y memoria en Neo4j | Aceptada |
+| 0001 | Perfiles de servidor, registros MCP y memoria en Neo4j | Aceptada |
 
-> Los ADR 0002-0006 del plan de estudio anterior se descartaron junto con el
-> archivo historico (`docs/archive/`). Sus decisiones ya no aplican al proyecto
-> actual; la numeracion futura continua en 0002.
+> El ADR del pivot desde el laboratorio Django/React se retiro: el pivot esta
+> ejecutado y el repositorio ya solo es servidor MCP, asi que su documentacion
+> historica dejo de aportar. Tampoco existen los ADR 0002-0006 del plan de
+> estudio anterior, descartados junto con `docs/archive/`.

@@ -26,15 +26,28 @@ Strata Local, los LLMs de suscripcion y cualquier cliente MCP estandar.
   y escrituras destiladas.
 - Feature packs con presupuesto de tokens, sin volcados de ficheros completos.
 
-Complementos del entorno (no viven en este paquete):
+### Lo que NO es de este repo (no busques aqui su codigo)
 
-- **Strata Local**: `Qwen3.8-Flash-Next IQ3_S` en RTX 5070 Ti, expuesto via MCP
-  `strata-local` (`strata_chat`, `strata_status`) y activable con `/strata` o
-  `local:`.
-- **MCP genericos** que no duplicamos: `mcp-neo4j-cypher` (Cypher crudo
-  read-only) y `duckduckgo-mcp-server` (web search/fetch).
-- **Scripts auxiliares** en `scripts/`: `context_pack.py` (feature pack de repo)
-  y `web_context.py` / `web_search_agent.py` (brief web citable).
+- **Strata Local** es un **consumidor**, no un registro nuestro. El modelo
+  `Qwen3.8-Flash-Next IQ3_S` corre en la RTX 5070 Ti via llama.cpp y lo gestiona
+  la app Strata del entorno (gateway `http://127.0.0.1:18500`). El MCP
+  `strata-local` (`strata_chat`, `strata_status`) y el atajo `/strata` los monta
+  **Antigravity** en su config MCP global: en este repo no hay ni una linea de
+  ese codigo.
+- **Otros MCP externos** que tampoco implementamos ni duplicamos:
+  `mcp-neo4j-cypher` (Cypher crudo read-only) y `duckduckgo-mcp-server`
+  (web search/fetch).
+
+### Lo que SI esta aqui pero fuera del paquete
+
+- **Scripts de contexto** en `scripts/`: `context_pack.py` (feature pack de
+  repo) y `web_context.py` (brief web citable). CLI sin MCP, para preparar
+  contexto a mano.
+- **Lanzadores del motor local**: `start_llama.ps1` / `start_llama.bat` /
+  `check_tools.ps1`. Solo envuelven alias de WSL para subir un `llama-server`
+  aparte en el puerto `8080` y comprobar que levante sus servidores MCP. No son
+  el gateway de Strata. Conveniencia para la Fase 1; no forman parte del paquete
+  ni de sus tests.
 
 ## Documentos que debes leer
 
@@ -50,7 +63,7 @@ Complementos del entorno (no viven en este paquete):
 - Fase 1 en curso: evaluacion del modelo local con tareas reales de desarrollo.
 - Transporte: **stdio-first**. No requiere base de datos, Docker ni servicios
   externos para funcionar.
-- Arquitectura de registros y perfiles: decidida en `docs/adr/0002-*.md`
+- Arquitectura de registros y perfiles: decidida en `docs/adr/0001-*.md`
   (pendiente de implementacion en Fase 2).
 - Registro `memory` (Neo4j en Raspberry Pi): pendiente (Fase 2), con degradacion
   limpia si la red no esta disponible. El grafo de codigo queda **reservado**
@@ -88,7 +101,7 @@ McpServer/
 |   |-- tools/               registros (code.py; memory.py en Fase 2)
 |   |-- server.py            create_server(profile)
 |   + -- __main__.py         Arranque stdio + perfiles por subcomando
-|-- scripts/                 context_pack.py, web_context.py, web_search_agent.py
+|-- scripts/                 context_pack.py, web_context.py, lanzadores llama
 +-- tests/                   Pruebas unitarias del paquete
 ```
 

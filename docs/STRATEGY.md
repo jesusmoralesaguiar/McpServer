@@ -50,7 +50,7 @@ Servidores MCP **externos** que no duplicamos: `mcp-neo4j-cypher` (Cypher
 crudo, read-only) y `duckduckgo-mcp-server` (web search/fetch). Nuestro
 registro `memory` es **complementario**: escribe con criterio y devuelve
 lecturas tipadas; el Cypher libre sigue en el MCP generico. Ver
-[ADR 0002](adr/0002-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md).
+[ADR 0001](adr/0001-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md).
 
 ## Donde invertir
 

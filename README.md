@@ -70,8 +70,7 @@ python -m unittest discover -s tests
 * [Visión del proyecto](docs/STRATEGY.md)
 * [Arquitectura del Sistema](docs/ARCHITECTURE.md)
 * [Roadmap de Desarrollo](docs/ROADMAP.md)
-* [ADR 0001: Pivot a Servidor MCP de Dominio](docs/adr/0001-pivot-a-servidor-mcp-de-dominio-y-workbench-local.md)
-* [ADR 0002: Perfiles de servidor, registros MCP y memoria en Neo4j](docs/adr/0002-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md)
+* [ADR 0001: Perfiles de servidor, registros MCP y memoria en Neo4j](docs/adr/0001-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md)
 
 ---
 

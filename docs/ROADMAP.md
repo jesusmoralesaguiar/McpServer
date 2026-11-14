@@ -32,7 +32,10 @@ suscripción pueden resolver tareas reales de desarrollo con ese contexto.
 - [x] Archivo formal de ADRs antiguos y creación de ADR 0001.
 
 ### Fase 1: Evaluación con Strata como Motor de Proyecto (En curso)
-- [x] Integración de Strata vía MCP `strata-local` (`strata_chat`) y atajo `/strata`.
+- [x] Strata accesible desde los clientes: MCP global `strata-local`
+      (`strata_chat`, `strata_status`) y atajo `/strata`. **No es código de este
+      repo**: vive en la config MCP global del entorno (Antigravity). Aquí solo
+      cuenta como prerequisito para poder medir.
 - [ ] Definir el catálogo de pruebas tipo (benchmark local):
   1. Comprensión de arquitectura y diagnóstico de bugs.
   2. Refactorizaciones acotadas en ficheros reales.

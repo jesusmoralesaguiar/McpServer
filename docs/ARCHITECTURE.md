@@ -5,7 +5,7 @@
 **McpServer es el servidor MCP del ecosistema de trabajo.** Cada capacidad que
 usan los modelos se da de alta como un **registro MCP** (módulo enchufable) y un
 **perfil** decide qué registros se montan en cada arranque. Ver
-[ADR 0002](adr/0002-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md).
+[ADR 0001](adr/0001-perfiles-de-servidor-registros-mcp-y-memoria-neo4j.md).
 
 ```text
 +--------------------------------------------------------------------------+
@@ -49,7 +49,7 @@ lecturas tipadas.
 * **Modelo:** `Qwen3.8-Flash-Next IQ3_S` con drafter DFlash2 (`--spec 6`).
 * **Hardware:** NVIDIA GeForce RTX 5070 Ti (16 GB VRAM) + Intel Core i7-12700KF.
 * **Capacidad:** Contexto de hasta 128K (`--max-context 131072`) con KV residente de 16K (`--kv-resident 16384`), generando a ~55–70 tok/s.
-* **Integración:** Endpoints locales `http://127.0.0.1:18500` (Gateway) y `http://127.0.0.1:8080` (Engine), expuesto vía MCP global `strata-local` (`strata_chat`, `strata_status`) y activable con `/strata`.
+* **Integración:** Endpoints locales `http://127.0.0.1:18500` (Gateway) y `http://127.0.0.1:8080` (Engine), expuesto vía MCP global `strata-local` (`strata_chat`, `strata_status`) y activable con `/strata`. Ese MCP y el atajo viven en la config MCP global del entorno (Antigravity), **no** en este repositorio.
 
 ### B. Servidor MCP: `mcp_server`
 * **Tecnología:** Python 3.10+, FastMCP, MCP SDK oficial, Pydantic.

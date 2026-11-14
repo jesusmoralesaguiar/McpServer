@@ -1,10 +1,8 @@
-# ADR 0002: Perfiles de servidor, registros MCP y memoria en Neo4j
+# ADR 0001: Perfiles de servidor, registros MCP y memoria en Neo4j
 
 - **Estado:** Aceptado
 - **Fecha:** 2026-11-12
 - **Decisores:** Jesús Morales Aguiar, Asistente Copilot, Strata Local
-- **Relación:** amplía y sustituye el punto 4 (tríada) de
-  [ADR 0001](0001-pivot-a-servidor-mcp-de-dominio-y-workbench-local.md)
 
 ---
 

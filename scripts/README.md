@@ -205,7 +205,34 @@ ln -s ~/VS/McpServer/scripts/web_context.py ~/.local/bin/web-context
 necesita `ddgs` en el Python activo; si no esta, usa `--url` o instala
 `pip install ddgs`.
 
-## `web_search_agent.py`
+## `web_search_agent.py` — eliminado
 
-Agente CLI de busqueda web con DuckDuckGo y un LLM compatible con OpenAI.
-No forma parte del context pack; se documenta aqui por completitud.
+Era un agente CLI de busqueda web sobre `llama-server` con tool-calling. Nacio
+en el enfoque anterior (el chatbot hablando con llama.cpp por su API
+OpenAI-compatible) y hoy sobra: la busqueda web con citas ya la dan
+`duckduckgo-mcp-server` y `web_context.py`, y el agente que orquesta el flujo es
+el cliente MCP. El fichero esta borrado del arbol y sigue recuperable en el
+historial de git.
+
+## Lanzadores del motor local
+
+`start_llama.ps1`, `start_llama.bat` y `check_tools.ps1` no son parte del
+paquete ni entran en los tests. Son conveniencia para la Fase 1 (evaluar a
+Strata):
+
+| Script | Que hace |
+|---|---|
+| `start_llama.ps1` / `start_llama.bat` | Arranca un `llama-server` crudo en WSL con contexto 48k o 64k. Solo envuelven el alias `llama-server-qwen38-<ctx>` definido en WSL. |
+| `check_tools.ps1` | Consulta `GET http://127.0.0.1:8080/tools` para comprobar que ese `llama-server` levanto sus servidores MCP (`--mcp-servers-config`). |
+
+Ojo con no mezclar los dos caminos al motor local:
+
+- **Strata** (la app instalada) es quien sirve el modelo de trabajo en
+  `http://127.0.0.1:18500` — `qwen3.8-flash-next-iq3_s`, contexto 131072. No es
+  codigo de este repo ni arranca desde estos scripts.
+- Los **launchers de WSL** suben un `llama-server` aparte en el puerto `8080`
+  con el GGUF `Qwen3.8-27B-UD-Q3_K_XL` y `--spec-type draft-mtp`, y sirven para
+  probar que los servidores MCP se montan dentro de `llama-server`.
+
+Dependencias reales: los alias y el `mcp.json` de WSL. Si cambian alli, estos
+scripts quedan obsoletos; no hay config que mantener aqui.
